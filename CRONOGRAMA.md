@@ -40,51 +40,88 @@
    - [x] Revisão das importações nos arquivos de modelo
    - [x] Atualização de referências cruzadas entre modelos
 
+8. [x] Configuração de URLs
+   - [x] Configuração do arquivo config/urls.py
+   - [x] Criação e configuração de core/urls.py
+   - [x] Criação e configuração de equipamentos/urls.py
+
+9. [x] Criação de views básicas
+   - [x] Implementação de views para o app core
+   - [x] Implementação de views para o app equipamentos
+
+10. [ ] Criação e implementação de templates
+    - [x] base.html
+    - [ ] dashboard.html
+    - [ ] cliente_list.html
+    - [ ] cliente_detail.html
+    - [ ] cliente_form.html
+    - [ ] ordem_servico_list.html
+    - [ ] ordem_servico_detail.html
+    - [ ] ordem_servico_form.html
+    - [ ] contrato_list.html
+    - [ ] contrato_detail.html
+    - [ ] contrato_form.html
+    - [ ] equipamento_list.html
+    - [ ] equipamento_detail.html
+    - [ ] equipamento_form.html
+
+11. [x] Implementação de formulários iniciais
+    - [x] Criação do arquivo forms.py para o app core
+    - [x] Implementação do formulário ClienteForm
+
+12. [x] Configuração de arquivos estáticos
+    - [x] Criação do diretório static e subdiretório css
+    - [x] Criação do arquivo styles.css com estilos básicos
+
 ## Próximas Etapas
 
-8. [ ] Criação de migrações e aplicação no banco de dados
-   - [ ] Executar makemigrations para core e equipamentos
-   - [ ] Executar migrate
+13. [ ] Implementação de formulários adicionais
+    - [ ] Criação de formulários para Ordens de Serviço
+    - [ ] Criação de formulários para Contratos
+    - [ ] Criação de formulários para Equipamentos
 
-9. [ ] Configuração do Django Admin
-   - [ ] Registrar modelos no admin.py de cada app
-   - [ ] Personalizar exibição dos modelos no admin
+14. [ ] Aprimoramento das views
+    - [ ] Implementar lógica de processamento de formulários para todas as entidades
+    - [ ] Adicionar paginação às views de listagem
+    - [ ] Implementar filtros e ordenação nas views de listagem
 
-10. [ ] Desenvolvimento de views e templates básicos
-    - [ ] Página inicial
-    - [ ] Listagem de clientes
-    - [ ] Detalhes do cliente
-    - [ ] Listagem de equipamentos
-    - [ ] Detalhes do equipamento
-    - [ ] Criação e edição de ordens de serviço
+15. [ ] Implementação de autenticação e autorização
+    - [ ] Configurar sistema de login/logout
+    - [ ] Implementar decoradores de permissão nas views
 
-11. [ ] Implementação de autenticação e autorização
-    - [ ] Configuração de login/logout
-    - [ ] Criação de perfis de usuário (admin, técnico, etc.)
-    - [ ] Restrição de acesso baseada em permissões
+16. [ ] Implementação de feedback ao usuário
+    - [ ] Adicionar mensagens de sucesso/erro em todas as operações relevantes
 
-12. [ ] Desenvolvimento de funcionalidades específicas
-    - [ ] Agendamento de manutenções
-    - [ ] Geração de relatórios
-    - [ ] Faturamento automático
+17. [ ] Criação de migrações e aplicação no banco de dados
+    - [ ] Executar makemigrations para core e equipamentos
+    - [ ] Executar migrate
 
-13. [ ] Testes
-    - [ ] Escrita de testes unitários
-    - [ ] Escrita de testes de integração
+18. [ ] Configuração do Django Admin
+    - [ ] Registrar modelos no admin.py de cada app
+    - [ ] Personalizar exibição dos modelos no admin
 
-14. [ ] Documentação
-    - [ ] Atualização do README.md
-    - [ ] Documentação de API (se aplicável)
-    - [ ] Manual do usuário
+19. [ ] Desenvolvimento de funcionalidades específicas
+    - [ ] Implementar agendamento de manutenções
+    - [ ] Desenvolver sistema de geração de relatórios
+    - [ ] Implementar faturamento automático
 
-15. [ ] Preparação para deploy
-    - [ ] Configuração de ambiente de produção
-    - [ ] Testes em ambiente de staging
+20. [ ] Testes
+    - [ ] Escrever testes unitários
+    - [ ] Escrever testes de integração
 
-16. [ ] Deploy
-    - [ ] Escolha e configuração do servidor de hospedagem
-    - [ ] Deploy da aplicação
+21. [ ] Documentação
+    - [ ] Atualizar o README.md
+    - [ ] Criar documentação de API (se aplicável)
+    - [ ] Elaborar manual do usuário
 
-17. [ ] Manutenção e atualizações pós-lançamento
-    - [ ] Monitoramento de erros
-    - [ ] Implementação de feedback dos usuários
+22. [ ] Preparação para deploy
+    - [ ] Configurar ambiente de produção
+    - [ ] Realizar testes em ambiente de staging
+
+23. [ ] Deploy
+    - [ ] Escolher e configurar servidor de hospedagem
+    - [ ] Realizar o deploy da aplicação
+
+24. [ ] Manutenção e atualizações pós-lançamento
+    - [ ] Implementar sistema de monitoramento de erros
+    - [ ] Coletar e implementar feedback dos usuários

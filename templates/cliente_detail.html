@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ cliente.nome }} - Detalhes do Cliente - ClimaHub{% endblock %}
+
+{% block content %}
+<div class="cliente-detail">
+    <h1>Detalhes do Cliente</h1>
+    
+    <div class="cliente-info">
+        <h2>{{ cliente.nome }}</h2>
+        <p><strong>Tipo:</strong> {% if cliente.tipo == 'PF' %}Pessoa Física{% else %}Pessoa Jurídica{% endif %}</p>
+        <p><strong>Email:</strong> {{ cliente.email }}</p>
+        <p><strong>Telefone:</strong> {{ cliente.telefone }}</p>
+        <p><strong>Endereço:</strong> {{ cliente.endereco }}</p>
+        {% if cliente.tipo == 'PJ' %}
+            <p><strong>CNPJ:</strong> {{ cliente.cnpj }}</p>
+            <p><strong>Razão Social:</strong> {{ cliente.razao_social }}</p>
+        {% else %}
+            <p><strong>CPF:</strong> {{ cliente.cpf }}</p>
+        {% endif %}
+    </div>
+
+    <div class="cliente-actions">
+        <a href="{% url 'cliente_edit' cliente.id %}" class="btn btn-warning">Editar Cliente</a>
+        <a href="{% url 'cliente_list' %}" class="btn btn-secondary">Voltar para Lista de Clientes</a>
+    </div>
+
+    <div class="related-info">
+        <h3>Contratos</h3>
+        {% if cliente.contratos.all %}
+            <ul>
+                {% for contrato in cliente.contratos.all %}
+                    <li>
+                        <a href="{% url 'contrato_detail' contrato.id %}">
+                            Contrato #{{ contrato.numero }} - {{ contrato.get_status_display }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Este cliente não possui contratos.</p>
+        {% endif %}
+        <a href="{% url 'contrato_create' %}?cliente={{ cliente.id }}" class="btn btn-primary">Novo Contrato</a>
+
+        <h3>Ordens de Serviço</h3>
+        {% if cliente.ordens_servico.all %}
+            <ul>
+                {% for ordem in cliente.ordens_servico.all %}
+                    <li>
+                        <a href="{% url 'ordem_servico_detail' ordem.id %}">
+                            OS #{{ ordem.numero }} - {{ ordem.get_status_display }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Este cliente não possui ordens de serviço.</p>
+        {% endif %}
+        <a href="{% url 'ordem_servico_create' %}?cliente={{ cliente.id }}" class="btn btn-primary">Nova Ordem de Serviço</a>
+    </div>
+</div>
+{% endblock %}
