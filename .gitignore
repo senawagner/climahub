@@ -1,4 +1,68 @@
-
 venv/
 
 .env
+
+# Ambiente virtual
+venv/
+env/
+.venv/
+
+# Arquivos de configuração
+.env
+
+# Arquivos Python compilados
+*.pyc
+__pycache__/
+
+# Arquivos de mídia e estáticos coletados
+media/
+static/
+
+# Arquivos de log
+*.log
+
+# Arquivos temporários
+*.tmp
+
+# Arquivos de IDE/editores
+.vscode/
+.idea/
+*.swp
+
+# Arquivos de sistema operacional
+.DS_Store
+Thumbs.db
+
+# Arquivos de migração do Django (opcional, dependendo da sua preferência)
+# */migrations/*.py
+# !*/migrations/__init__.py
+
+# Arquivos de dependências
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Arquivos de cobertura de testes
+htmlcov/
+.coverage
+.coverage.*
+.cache
+
+# Arquivos de distribuição / packaging
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Documentação
+docs/_build/
+
+# Arquivos de ambiente Python
+.python-version
+
+# Arquivos de backup do MySQL
+*.sql
+*.sql.gz
+
+# Arquivos de configuração local do MySQL
+my.cnf
+
+**/__pycache__/
