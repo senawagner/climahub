@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Detalhes da Ordem de Serviço - ClimaHub{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Detalhes da Ordem de Serviço</h1>
+
+    <div class="card">
+        <div class="card-header">
+            <h2>OS #{{ ordem_servico.numero }}</h2>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h3>Informações Gerais</h3>
+                    <p><strong>Cliente:</strong> <a href="{% url 'cliente_detail' ordem_servico.cliente.id %}">{{ ordem_servico.cliente.nome }}</a></p>
+                    <p><strong>Data de Abertura:</strong> {{ ordem_servico.data|date:"d/m/Y H:i" }}</p>
+                    <p><strong>Status:</strong> <span class="badge {% if ordem_servico.status == 'ABERTA' %}bg-success{% elif ordem_servico.status == 'EM_ANDAMENTO' %}bg-warning{% else %}bg-danger{% endif %}">{{ ordem_servico.get_status_display }}</span></p>
+                    <p><strong>Técnico Responsável:</strong> {{ ordem_servico.tecnico_responsavel }}</p>
+                </div>
+                <div class="col-md-6">
+                    <h3>Descrição</h3>
+                    <p>{{ ordem_servico.descricao|linebreaks }}</p>
+                </div>
+            </div>
+
+            {% if ordem_servico.manutencao %}
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <h3>Detalhes da Manutenção</h3>
+                    <p><strong>Tipo de Manutenção:</strong> {{ ordem_servico.manutencao.get_tipo_manutencao_display }}</p>
+                    <p><strong>Data de Agendamento:</strong> {{ ordem_servico.manutencao.data_agendamento|date:"d/m/Y H:i" }}</p>
+                    {% if ordem_servico.manutencao.equipamento %}
+                    <p><strong>Equipamento:</strong> {{ ordem_servico.manutencao.equipamento.nome }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if ordem_servico.servico %}
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <h3>Serviço Associado</h3>
+                    <p><strong>Nome do Serviço:</strong> {{ ordem_servico.servico.nome }}</p>
+                    <p><strong>Descrição do Serviço:</strong> {{ ordem_servico.servico.descricao }}</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <div class="card-footer">
+            <a href="{% url 'ordem_servico_edit' ordem_servico.id %}" class="btn btn-primary">Editar Ordem de Serviço</a>
+            <a href="{% url 'ordem_servico_list' %}" class="btn btn-secondary">Voltar para Lista</a>
+        </div>
+    </div>
+
+    {% if ordem_servico.status != 'CONCLUIDA' %}
+    <div class="mt-4">
+        <h3>Atualizar Status</h3>
+        <form method="post" action="{% url 'ordem_servico_update_status' ordem_servico.id %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <select name="novo_status" class="form-control">
+                    <option value="EM_ANDAMENTO">Em Andamento</option>
+                    <option value="CONCLUIDA">Concluída</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-warning mt-2">Atualizar Status</button>
+        </form>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

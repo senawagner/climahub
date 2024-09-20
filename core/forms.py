@@ -1,10 +1,10 @@
 from django import forms
-from .models import Cliente
+from .models import Cliente, Contrato
 
 class ClienteForm(forms.ModelForm):
     class Meta:
         model = Cliente
-        fields = ['nome', 'tipo', 'email', 'telefone', 'endereco', 'cpf', 'cnpj', 'razao_social']
+        fields = ['nome', 'tipo', 'email', 'telefone', 'cep', 'endereco', 'cpf', 'cnpj', 'razao_social']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -27,5 +27,25 @@ class ClienteForm(forms.ModelForm):
                 self.add_error('cnpj', 'CNPJ é obrigatório para Pessoa Jurídica.')
             if not razao_social:
                 self.add_error('razao_social', 'Razão Social é obrigatória para Pessoa Jurídica.')
+
+        return cleaned_data
+
+class ContratoForm(forms.ModelForm):
+    class Meta:
+        model = Contrato
+        fields = ['cliente', 'data_inicio', 'data_fim', 'valor', 'frequencia_manutencao', 'ativo', 'descricao']
+        widgets = {
+            'data_inicio': forms.DateInput(attrs={'type': 'date'}),
+            'data_fim': forms.DateInput(attrs={'type': 'date'}),
+            'descricao': forms.Textarea(attrs={'rows': 4}),
+        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        data_inicio = cleaned_data.get('data_inicio')
+        data_fim = cleaned_data.get('data_fim')
+
+        if data_inicio and data_fim and data_fim < data_inicio:
+            raise forms.ValidationError("A data de fim não pode ser anterior à data de início.")
 
         return cleaned_data

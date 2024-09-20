@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}{% if form.instance.pk %}Editar{% else %}Novo{% endif %} Contrato - ClimaHub{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">{% if form.instance.pk %}Editar{% else %}Novo{% endif %} Contrato</h1>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+        
+        <div class="row">
+            <div class="col-md-6">
+                {{ form.cliente|as_crispy_field }}
+            </div>
+            <div class="col-md-6">
+                {{ form.data_inicio|as_crispy_field }}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                {{ form.data_fim|as_crispy_field }}
+            </div>
+            <div class="col-md-6">
+                {{ form.valor|as_crispy_field }}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                {{ form.frequencia_manutencao|as_crispy_field }}
+            </div>
+            <div class="col-md-6">
+                {{ form.ativo|as_crispy_field }}
+            </div>
+        </div>
+
+        <div class="form-group">
+            {{ form.descricao|as_crispy_field }}
+        </div>
+
+        <div class="form-group mt-3">
+            <button type="submit" class="btn btn-primary">Salvar</button>
+            <a href="{% url 'contrato_list' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mask-plugin/1.14.16/jquery.mask.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#id_valor').mask('000.000.000.000.000,00', {reverse: true});
+        
+        $('#id_data_inicio, #id_data_fim').datepicker({
+            format: 'dd/mm/yyyy',
+            language: 'pt-BR',
+            autoclose: true
+        });
+    });
+</script>
+{% endblock %}

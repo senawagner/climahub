@@ -49,25 +49,28 @@
    - [x] Implementação de views para o app core
    - [x] Implementação de views para o app equipamentos
 
-10. [ ] Criação e implementação de templates
+10. [x] Criação e implementação de templates
     - [x] base.html
-    - [ ] dashboard.html
-    - [ ] cliente_list.html
-    - [ ] cliente_detail.html
-    - [ ] cliente_form.html
-    - [ ] ordem_servico_list.html
-    - [ ] ordem_servico_detail.html
-    - [ ] ordem_servico_form.html
-    - [ ] contrato_list.html
-    - [ ] contrato_detail.html
-    - [ ] contrato_form.html
-    - [ ] equipamento_list.html
-    - [ ] equipamento_detail.html
-    - [ ] equipamento_form.html
+    - [x] dashboard.html
+    - [x] cliente_list.html
+    - [x] cliente_detail.html
+    - [x] cliente_form.html
+    - [x] ordem_servico_list.html
+    - [x] ordem_servico_detail.html
+    - [x] ordem_servico_form.html
+    - [x] contrato_list.html
+    - [x] contrato_detail.html
+    - [x] contrato_form.html
+    - [x] equipamento_list.html
+    - [x] equipamento_detail.html
+    - [x] equipamento_form.html
 
 11. [x] Implementação de formulários iniciais
     - [x] Criação do arquivo forms.py para o app core
     - [x] Implementação do formulário ClienteForm
+    - [x] Implementação do formulário ContratoForm
+    - [x] Implementação do formulário OrdemServicoForm
+    - [x] Implementação do formulário ManutencaoForm
 
 12. [x] Configuração de arquivos estáticos
     - [x] Criação do diretório static e subdiretório css
@@ -75,53 +78,48 @@
 
 ## Próximas Etapas
 
-13. [ ] Implementação de formulários adicionais
-    - [ ] Criação de formulários para Ordens de Serviço
-    - [ ] Criação de formulários para Contratos
-    - [ ] Criação de formulários para Equipamentos
-
-14. [ ] Aprimoramento das views
+13. [ ] Aprimoramento das views
     - [ ] Implementar lógica de processamento de formulários para todas as entidades
     - [ ] Adicionar paginação às views de listagem
     - [ ] Implementar filtros e ordenação nas views de listagem
 
-15. [ ] Implementação de autenticação e autorização
+14. [ ] Implementação de autenticação e autorização
     - [ ] Configurar sistema de login/logout
     - [ ] Implementar decoradores de permissão nas views
 
-16. [ ] Implementação de feedback ao usuário
+15. [ ] Implementação de feedback ao usuário
     - [ ] Adicionar mensagens de sucesso/erro em todas as operações relevantes
 
-17. [ ] Criação de migrações e aplicação no banco de dados
+16. [ ] Criação de migrações e aplicação no banco de dados
     - [ ] Executar makemigrations para core e equipamentos
     - [ ] Executar migrate
 
-18. [ ] Configuração do Django Admin
+17. [ ] Configuração do Django Admin
     - [ ] Registrar modelos no admin.py de cada app
     - [ ] Personalizar exibição dos modelos no admin
 
-19. [ ] Desenvolvimento de funcionalidades específicas
+18. [ ] Desenvolvimento de funcionalidades específicas
     - [ ] Implementar agendamento de manutenções
     - [ ] Desenvolver sistema de geração de relatórios
     - [ ] Implementar faturamento automático
 
-20. [ ] Testes
+19. [ ] Testes
     - [ ] Escrever testes unitários
     - [ ] Escrever testes de integração
 
-21. [ ] Documentação
+20. [ ] Documentação
     - [ ] Atualizar o README.md
     - [ ] Criar documentação de API (se aplicável)
     - [ ] Elaborar manual do usuário
 
-22. [ ] Preparação para deploy
+21. [ ] Preparação para deploy
     - [ ] Configurar ambiente de produção
     - [ ] Realizar testes em ambiente de staging
 
-23. [ ] Deploy
+22. [ ] Deploy
     - [ ] Escolher e configurar servidor de hospedagem
     - [ ] Realizar o deploy da aplicação
 
-24. [ ] Manutenção e atualizações pós-lançamento
+23. [ ] Manutenção e atualizações pós-lançamento
     - [ ] Implementar sistema de monitoramento de erros
     - [ ] Coletar e implementar feedback dos usuários

@@ -17,6 +17,7 @@ class Contrato(models.Model):
     ]
     frequencia_manutencao = models.CharField(max_length=20, choices=FREQUENCIA_CHOICES)
     ativo = models.BooleanField(default=True)
+    descricao = models.TextField(blank=True, null=True, help_text="Descrição detalhada do contrato")
 
     def __str__(self):
         return f"Contrato {self.id} - {self.cliente.nome}"

@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - ClimaHub{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <h1 class="mb-4">Dashboard</h1>
+
+    <div class="row">
+        <!-- Resumo de Ordens de Serviço -->
+        <div class="col-md-3 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Ordens de Serviço</h5>
+                    <p class="card-text">Total: {{ total_ordens }}</p>
+                    <p class="card-text">Abertas: {{ ordens_abertas }}</p>
+                    <p class="card-text">Em Andamento: {{ ordens_em_andamento }}</p>
+                    <a href="{% url 'ordem_servico_list' %}" class="btn btn-primary">Ver Todas</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resumo de Contratos -->
+        <div class="col-md-3 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Contratos</h5>
+                    <p class="card-text">Total: {{ total_contratos }}</p>
+                    <p class="card-text">Ativos: {{ contratos_ativos }}</p>
+                    <p class="card-text">A Vencer em 30 dias: {{ contratos_a_vencer }}</p>
+                    <a href="{% url 'contrato_list' %}" class="btn btn-primary">Ver Todos</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resumo de Clientes -->
+        <div class="col-md-3 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Clientes</h5>
+                    <p class="card-text">Total: {{ total_clientes }}</p>
+                    <p class="card-text">Ativos: {{ clientes_ativos }}</p>
+                    <a href="{% url 'cliente_list' %}" class="btn btn-primary">Ver Todos</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resumo Financeiro -->
+        <div class="col-md-3 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Financeiro</h5>
+                    <p class="card-text">Faturamento Mensal: R$ {{ faturamento_mensal|floatformat:2 }}</p>
+                    <p class="card-text">Faturamento Anual: R$ {{ faturamento_anual|floatformat:2 }}</p>
+                    <a href="#" class="btn btn-primary">Relatório Detalhado</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <!-- Gráfico de Ordens de Serviço por Status -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Ordens de Serviço por Status</h5>
+                    <canvas id="osStatusChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráfico de Faturamento Mensal -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Faturamento Mensal</h5>
+                    <canvas id="faturamentoChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <!-- Últimas Ordens de Serviço -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Últimas Ordens de Serviço</h5>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Número</th>
+                                <th>Cliente</th>
+                                <th>Status</th>
+                                <th>Data</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ordem in ultimas_ordens %}
+                            <tr>
+                                <td>{{ ordem.numero }}</td>
+                                <td>{{ ordem.cliente.nome }}</td>
+                                <td>{{ ordem.get_status_display }}</td>
+                                <td>{{ ordem.data|date:"d/m/Y" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contratos a Vencer -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Contratos a Vencer em 30 dias</h5>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Valor</th>
+                                <th>Data de Vencimento</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for contrato in contratos_proximos_vencimento %}
+                            <tr>
+                                <td>{{ contrato.cliente.nome }}</td>
+                                <td>R$ {{ contrato.valor|floatformat:2 }}</td>
+                                <td>{{ contrato.data_fim|date:"d/m/Y" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Gráfico de Ordens de Serviço por Status
+    var ctxOS = document.getElementById('osStatusChart').getContext('2d');
+    var osStatusChart = new Chart(ctxOS, {
+        type: 'pie',
+        data: {
+            labels: ['Abertas', 'Em Andamento', 'Concluídas'],
+            datasets: [{
+                data: [{{ ordens_abertas }}, {{ ordens_em_andamento }}, {{ ordens_concluidas }}],
+                backgroundColor: ['#ff6384', '#36a2eb', '#ffce56']
+            }]
+        }
+    });
+
+    // Gráfico de Faturamento Mensal
+    var ctxFaturamento = document.getElementById('faturamentoChart').getContext('2d');
+    var faturamentoChart = new Chart(ctxFaturamento, {
+        type: 'bar',
+        data: {
+            labels: {{ meses|safe }},
+            datasets: [{
+                label: 'Faturamento Mensal',
+                data: {{ faturamento_mensal_dados|safe }},
+                backgroundColor: '#36a2eb'
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

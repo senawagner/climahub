@@ -1,36 +1,43 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}{{ cliente.nome }} - Detalhes do Cliente - ClimaHub{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-mask-plugin/1.14.16/jquery.mask.min.css">
+{% endblock %}
 
 {% block content %}
 <div class="cliente-detail">
     <h1>Detalhes do Cliente</h1>
     
-    <div class="cliente-info">
-        <h2>{{ cliente.nome }}</h2>
-        <p><strong>Tipo:</strong> {% if cliente.tipo == 'PF' %}Pessoa Física{% else %}Pessoa Jurídica{% endif %}</p>
-        <p><strong>Email:</strong> {{ cliente.email }}</p>
-        <p><strong>Telefone:</strong> {{ cliente.telefone }}</p>
-        <p><strong>Endereço:</strong> {{ cliente.endereco }}</p>
-        {% if cliente.tipo == 'PJ' %}
-            <p><strong>CNPJ:</strong> {{ cliente.cnpj }}</p>
-            <p><strong>Razão Social:</strong> {{ cliente.razao_social }}</p>
-        {% else %}
-            <p><strong>CPF:</strong> {{ cliente.cpf }}</p>
-        {% endif %}
+    <div class="cliente-info card">
+        <div class="card-body">
+            <h2 class="card-title">{{ cliente.nome }}</h2>
+            <p><strong>Tipo:</strong> {% if cliente.tipo == 'PF' %}Pessoa Física{% else %}Pessoa Jurídica{% endif %}</p>
+            <p><strong>Email:</strong> {{ cliente.email }}</p>
+            <p><strong>Telefone:</strong> <span class="telefone">{{ cliente.telefone }}</span></p>
+            <p><strong>Endereço:</strong> <span id="endereco">{{ cliente.endereco }}</span></p>
+            {% if cliente.tipo == 'PF' %}
+                <p><strong>CPF:</strong> <span class="cpf">{{ cliente.cpf }}</span></p>
+            {% else %}
+                <p><strong>CNPJ:</strong> <span class="cnpj">{{ cliente.cnpj }}</span></p>
+                <p><strong>Razão Social:</strong> {{ cliente.razao_social }}</p>
+            {% endif %}
+        </div>
     </div>
 
-    <div class="cliente-actions">
+    <div class="cliente-actions mt-3">
         <a href="{% url 'cliente_edit' cliente.id %}" class="btn btn-warning">Editar Cliente</a>
         <a href="{% url 'cliente_list' %}" class="btn btn-secondary">Voltar para Lista de Clientes</a>
     </div>
 
-    <div class="related-info">
+    <div class="related-info mt-4">
         <h3>Contratos</h3>
         {% if cliente.contratos.all %}
-            <ul>
+            <ul class="list-group">
                 {% for contrato in cliente.contratos.all %}
-                    <li>
+                    <li class="list-group-item">
                         <a href="{% url 'contrato_detail' contrato.id %}">
                             Contrato #{{ contrato.numero }} - {{ contrato.get_status_display }}
                         </a>
@@ -40,13 +47,13 @@
         {% else %}
             <p>Este cliente não possui contratos.</p>
         {% endif %}
-        <a href="{% url 'contrato_create' %}?cliente={{ cliente.id }}" class="btn btn-primary">Novo Contrato</a>
+        <a href="{% url 'contrato_create' %}?cliente={{ cliente.id }}" class="btn btn-primary mt-2">Novo Contrato</a>
 
-        <h3>Ordens de Serviço</h3>
+        <h3 class="mt-4">Ordens de Serviço</h3>
         {% if cliente.ordens_servico.all %}
-            <ul>
+            <ul class="list-group">
                 {% for ordem in cliente.ordens_servico.all %}
-                    <li>
+                    <li class="list-group-item">
                         <a href="{% url 'ordem_servico_detail' ordem.id %}">
                             OS #{{ ordem.numero }} - {{ ordem.get_status_display }}
                         </a>
@@ -56,7 +63,38 @@
         {% else %}
             <p>Este cliente não possui ordens de serviço.</p>
         {% endif %}
-        <a href="{% url 'ordem_servico_create' %}?cliente={{ cliente.id }}" class="btn btn-primary">Nova Ordem de Serviço</a>
+        <a href="{% url 'ordem_servico_create' %}?cliente={{ cliente.id }}" class="btn btn-primary mt-2">Nova Ordem de Serviço</a>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mask-plugin/1.14.16/jquery.mask.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.telefone').mask('(00) 00000-0000');
+        $('.cpf').mask('000.000.000-00');
+        $('.cnpj').mask('00.000.000/0000-00');
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    const enderecoSpan = document.getElementById('endereco');
+    const endereco = enderecoSpan.textContent;
+    const cepMatch = endereco.match(/\d{5}-?\d{3}/);
+    
+    if (cepMatch) {
+        const cep = cepMatch[0].replace('-', '');
+        axios.get(`https://viacep.com.br/ws/${cep}/json/`)
+            .then(response => {
+                const data = response.data;
+                if (!data.erro) {
+                    const enderecoCompleto = `${data.logradouro}, ${data.bairro}, ${data.localidade} - ${data.uf}, ${cep}`;
+                    enderecoSpan.textContent = enderecoCompleto;
+                }
+            })
+            .catch(error => console.error('Erro ao buscar CEP:', error));
+    }
+</script>
 {% endblock %}

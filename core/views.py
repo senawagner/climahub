@@ -1,99 +1,106 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.urls import reverse_lazy
 from django.contrib import messages
 from .models import Cliente, OrdemServico, Contrato
-from .forms import ClienteForm  
-from django.contrib.auth.decorators import login_required
+from .forms import ClienteForm, OrdemServicoForm, ContratoForm
 
-@login_required
-def dashboard(request):
-    # Lógica para o dashboard
-    return render(request, 'core/dashboard.html')
+class DashboardView(LoginRequiredMixin, ListView):
+    template_name = 'dashboard.html'
+    model = Cliente  # Você pode mudar isso para o modelo mais apropriado para o dashboard
+    context_object_name = 'items'
 
-@login_required
-def cliente_list(request):
-    clientes = Cliente.objects.all()
-    return render(request, 'core/cliente_list.html', {'clientes': clientes})
+class ClienteListView(LoginRequiredMixin, ListView):
+    model = Cliente
+    template_name = 'cliente_list.html'
+    context_object_name = 'clientes'
+    paginate_by = 10
 
-@login_required
-def cliente_detail(request, pk):
-    cliente = get_object_or_404(Cliente, pk=pk)
-    return render(request, 'core/cliente_detail.html', {'cliente': cliente})
+class ClienteDetailView(LoginRequiredMixin, DetailView):
+    model = Cliente
+    template_name = 'cliente_detail.html'
+    context_object_name = 'cliente'
 
-@login_required
-def cliente_create(request):
-    if request.method == 'POST':
-        form = ClienteForm(request.POST)
-        if form.is_valid():
-            cliente = form.save()
-            messages.success(request, 'Cliente criado com sucesso!')
-            return redirect('cliente_detail', pk=cliente.pk)
-    else:
-        form = ClienteForm()
-    return render(request, 'core/cliente_form.html', {'form': form})
+class ClienteCreateView(LoginRequiredMixin, CreateView):
+    model = Cliente
+    form_class = ClienteForm
+    template_name = 'cliente_form.html'
+    success_url = reverse_lazy('cliente_list')
 
-@login_required
-def cliente_edit(request, pk):
-    cliente = get_object_or_404(Cliente, pk=pk)
-    if request.method == 'POST':
-        form = ClienteForm(request.POST, instance=cliente)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Cliente atualizado com sucesso!')
-            return redirect('cliente_detail', pk=cliente.pk)
-    else:
-        form = ClienteForm(instance=cliente)
-    return render(request, 'core/cliente_form.html', {'form': form, 'cliente': cliente})
+    def form_valid(self, form):
+        messages.success(self.request, 'Cliente criado com sucesso!')
+        return super().form_valid(form)
 
-@login_required
-def ordem_servico_list(request):
-    ordens = OrdemServico.objects.all()
-    return render(request, 'core/ordem_servico_list.html', {'ordens': ordens})
+class ClienteUpdateView(LoginRequiredMixin, UpdateView):
+    model = Cliente
+    form_class = ClienteForm
+    template_name = 'cliente_form.html'
+    success_url = reverse_lazy('cliente_list')
 
-@login_required
-def ordem_servico_detail(request, pk):
-    ordem = get_object_or_404(OrdemServico, pk=pk)
-    return render(request, 'core/ordem_servico_detail.html', {'ordem': ordem})
+    def form_valid(self, form):
+        messages.success(self.request, 'Cliente atualizado com sucesso!')
+        return super().form_valid(form)
 
-@login_required
-def ordem_servico_create(request):
-    # Lógica para criar uma nova ordem de serviço
-    if request.method == 'POST':
-        # Processar o formulário
-        pass
-    return render(request, 'core/ordem_servico_form.html')
+class OrdemServicoListView(LoginRequiredMixin, ListView):
+    model = OrdemServico
+    template_name = 'ordem_servico_list.html'
+    context_object_name = 'ordens'
+    paginate_by = 10
 
-@login_required
-def ordem_servico_edit(request, pk):
-    ordem = get_object_or_404(OrdemServico, pk=pk)
-    # Lógica para editar uma ordem de serviço
-    if request.method == 'POST':
-        # Processar o formulário
-        pass
-    return render(request, 'core/ordem_servico_form.html', {'ordem': ordem})
+class OrdemServicoDetailView(LoginRequiredMixin, DetailView):
+    model = OrdemServico
+    template_name = 'ordem_servico_detail.html'
+    context_object_name = 'ordem'
 
-@login_required
-def contrato_list(request):
-    contratos = Contrato.objects.all()
-    return render(request, 'core/contrato_list.html', {'contratos': contratos})
+class OrdemServicoCreateView(LoginRequiredMixin, CreateView):
+    model = OrdemServico
+    form_class = OrdemServicoForm
+    template_name = 'ordem_servico_form.html'
+    success_url = reverse_lazy('ordem_servico_list')
 
-@login_required
-def contrato_detail(request, pk):
-    contrato = get_object_or_404(Contrato, pk=pk)
-    return render(request, 'core/contrato_detail.html', {'contrato': contrato})
+    def form_valid(self, form):
+        messages.success(self.request, 'Ordem de Serviço criada com sucesso!')
+        return super().form_valid(form)
 
-@login_required
-def contrato_create(request):
-    # Lógica para criar um novo contrato
-    if request.method == 'POST':
-        # Processar o formulário
-        pass
-    return render(request, 'core/contrato_form.html')
+class OrdemServicoUpdateView(LoginRequiredMixin, UpdateView):
+    model = OrdemServico
+    form_class = OrdemServicoForm
+    template_name = 'ordem_servico_form.html'
+    success_url = reverse_lazy('ordem_servico_list')
 
-@login_required
-def contrato_edit(request, pk):
-    contrato = get_object_or_404(Contrato, pk=pk)
-    # Lógica para editar um contrato
-    if request.method == 'POST':
-        # Processar o formulário
-        pass
-    return render(request, 'core/contrato_form.html', {'contrato': contrato})
+    def form_valid(self, form):
+        messages.success(self.request, 'Ordem de Serviço atualizada com sucesso!')
+        return super().form_valid(form)
+
+class ContratoListView(LoginRequiredMixin, ListView):
+    model = Contrato
+    template_name = 'contrato_list.html'
+    context_object_name = 'contratos'
+    paginate_by = 10
+
+class ContratoDetailView(LoginRequiredMixin, DetailView):
+    model = Contrato
+    template_name = 'contrato_detail.html'
+    context_object_name = 'contrato'
+
+class ContratoCreateView(LoginRequiredMixin, CreateView):
+    model = Contrato
+    form_class = ContratoForm
+    template_name = 'contrato_form.html'
+    success_url = reverse_lazy('contrato_list')
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Contrato criado com sucesso!')
+        return super().form_valid(form)
+
+class ContratoUpdateView(LoginRequiredMixin, UpdateView):
+    model = Contrato
+    form_class = ContratoForm
+    template_name = 'contrato_form.html'
+    success_url = reverse_lazy('contrato_list')
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Contrato atualizado com sucesso!')
+        return super().form_valid(form)

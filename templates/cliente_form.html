@@ -1,12 +1,16 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}{% if cliente %}Editar{% else %}Novo{% endif %} Cliente - ClimaHub{% endblock %}
+{% block title %}{% if form.instance.pk %}Editar{% else %}Novo{% endif %} Cliente - ClimaHub{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-mask-plugin/1.14.16/jquery.mask.min.css">
+{% endblock %}
 
 {% block content %}
-<div class="cliente-form">
-    <h1>{% if cliente %}Editar{% else %}Novo{% endif %} Cliente</h1>
-    
-    <form method="post" novalidate>
+<div class="container">
+    <h1>{% if form.instance.pk %}Editar{% else %}Novo{% endif %} Cliente</h1>
+    <form method="post" id="clienteForm" novalidate>
         {% csrf_token %}
         
         {% if form.non_field_errors %}
@@ -66,6 +70,18 @@
         </div>
 
         <div class="form-group">
+            <label for="{{ form.cep.id_for_label }}">CEP:</label>
+            {{ form.cep }}
+            {% if form.cep.errors %}
+                <div class="invalid-feedback">
+                    {% for error in form.cep.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
             <label for="{{ form.endereco.id_for_label }}">Endereço:</label>
             {{ form.endereco }}
             {% if form.endereco.errors %}
@@ -116,34 +132,64 @@
             </div>
         </div>
 
-        <div class="form-actions">
+        <div class="form-group">
             <button type="submit" class="btn btn-primary">Salvar</button>
             <a href="{% url 'cliente_list' %}" class="btn btn-secondary">Cancelar</a>
         </div>
     </form>
 </div>
+{% endblock %}
 
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mask-plugin/1.14.16/jquery.mask.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var tipoSelect = document.getElementById('{{ form.tipo.id_for_label }}');
-        var pfFields = document.getElementById('pf_fields');
-        var pjFields = document.getElementById('pj_fields');
+    $(document).ready(function() {
+        // Máscaras para campos
+        $('#{{ form.telefone.id_for_label }}').mask('(00) 00000-0000');
+        $('#{{ form.cpf.id_for_label }}').mask('000.000.000-00');
+        $('#{{ form.cnpj.id_for_label }}').mask('00.000.000/0000-00');
+        $('#{{ form.cep.id_for_label }}').mask('00000-000');
 
+        // Controle de visibilidade dos campos PF/PJ
         function toggleFields() {
-            if (tipoSelect.value === 'PF') {
-                pfFields.style.display = 'block';
-                pjFields.style.display = 'none';
-            } else if (tipoSelect.value === 'PJ') {
-                pfFields.style.display = 'none';
-                pjFields.style.display = 'block';
+            var tipo = $('#{{ form.tipo.id_for_label }}').val();
+            if (tipo === 'PF') {
+                $('#pf_fields').show();
+                $('#pj_fields').hide();
+            } else if (tipo === 'PJ') {
+                $('#pf_fields').hide();
+                $('#pj_fields').show();
             } else {
-                pfFields.style.display = 'none';
-                pjFields.style.display = 'none';
+                $('#pf_fields').hide();
+                $('#pj_fields').hide();
             }
         }
 
-        tipoSelect.addEventListener('change', toggleFields);
-        toggleFields();  // Call once to set initial state
+        $('#{{ form.tipo.id_for_label }}').change(toggleFields);
+        toggleFields();
+
+        // Autocompletar endereço com CEP
+        $('#{{ form.cep.id_for_label }}').blur(function() {
+            var cep = $(this).val().replace(/\D/g, '');
+            if (cep.length === 8) {
+                axios.get(`https://viacep.com.br/ws/${cep}/json/`)
+                    .then(function(response) {
+                        if (!response.data.erro) {
+                            $('#{{ form.endereco.id_for_label }}').val(
+                                response.data.logradouro + ', ' +
+                                response.data.bairro + ', ' +
+                                response.data.localidade + ' - ' +
+                                response.data.uf
+                            );
+                        }
+                    })
+                    .catch(function(error) {
+                        console.error('Erro ao buscar CEP:', error);
+                    });
+            }
+        });
     });
 </script>
 {% endblock %}

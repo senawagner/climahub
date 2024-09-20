@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Detalhes do Contrato - ClimaHub{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Detalhes do Contrato</h1>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Contrato #{{ contrato.id }}</h5>
+            <p class="card-text"><strong>Cliente:</strong> {{ contrato.cliente.nome }}</p>
+            <p class="card-text"><strong>Data de Início:</strong> {{ contrato.data_inicio|date:"d/m/Y" }}</p>
+            <p class="card-text"><strong>Data de Término:</strong> {{ contrato.data_fim|date:"d/m/Y" }}</p>
+            <p class="card-text"><strong>Valor:</strong> R$ {{ contrato.valor|floatformat:2 }}</p>
+            <p class="card-text"><strong>Status:</strong> {% if contrato.ativo %}Ativo{% else %}Inativo{% endif %}</p>
+            <p class="card-text"><strong>Frequência de Manutenção:</strong> {{ contrato.get_frequencia_manutencao_display }}</p>
+            <p class="card-text"><strong>Duração:</strong> {{ contrato.duracao }} dias</p>
+            <p class="card-text"><strong>Está Ativo:</strong> {% if contrato.esta_ativo %}Sim{% else %}Não{% endif %}</p>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="{% url 'contrato_edit' contrato.id %}" class="btn btn-primary">Editar Contrato</a>
+        <a href="{% url 'contrato_list' %}" class="btn btn-secondary">Voltar para Lista de Contratos</a>
+    </div>
+</div>
+{% endblock %}
